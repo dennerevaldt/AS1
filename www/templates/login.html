@@ -1,0 +1,26 @@
+<ion-view title="Login" id="page6" cache-view="false">
+  <ion-content padding="true" class="has-header">
+    <form id="login-form2" class="list" ng-submit="vm.submitLogin()">
+      <div class="spacer" style="height: 30px;"></div>
+      <div class="text-center">
+        <img class="profile-img" ng-src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAAAAAAcD2kOAAAAAXNCSVQI5gpbmQAAA4JJREFUaIHt2llP4zAQAOAZJy2UVu1StrvSVoju8f9/EluEQOXoUujdJB4eoAfU17guPKzzFCnjfIntOM7E2IXP2cQnuRGOcIQjHOEIRzjCEf6ALfUtiAgAAEQfCiPm42lWQFI6rKV+NnZ92FF/urrjyknNh/aAxeJ6/sq+0OV2WfLPYroodYnB+UJsHEKRnQ/4fVRfAvN/qoPivpe8uyJMendsWdu5ML8o4GSrCsXDfbIdnPTTY2Zt664U8y4kd/33h3F2o3ABkpuZumG4MOZdAIWMV0oXILkKAr+42zIOct2J8gFPVsOLv68772Tcqvv1ifohYMDlkPBGxkmmP1M+ZclquNxRynRQ1o9ROOK4GphStYydVC+HuGOtDHoZFxxX+xx7yEUQ2EcOAwOlnVWjOcm84doQTWlnte8i8+YUpsvkyVQJBvNkOmK1vblhWHItIMyQqRGsc/Fk+sqbCVgv01GWLeZE2V4/TjJVmoGmPjyZSqfcCa5Lj7DK8qDDHkaduqJZpqJ5xh++3Z4BgyyL6q8W/0PC+RNmOf0DACha6/k2DeolD9b9laK7Z2wmXq77u0wn+76c3cc5bTvvGw4sc4oHlVmlQ8q8wgFlZtlwMrdoMJlZEhHLp6tHdxeZ8/pGpOlkOpNrLLlTZCsCw4jyaTgGBNy8SX/ZEUacPIzemjvKTjDi032mUHeRXWAxvM2Fthd5ynYY88uZnvWWrbAY3GgqeTfZBovrJ01ma0fZAuPFzO56yeZaFJdzt6GJP4YZw0XPOZPDlo356gkjD82VjXDPpX09ZUMsTnmZK55sCh0x+wtLNt3xnOfyZFO6iZdNYcomuFnZo2wKk21mup8jmweQU15ilCObE2yHP/Ymm2Nk/du+ZEuIbLb2JNsi5Mn3/cjWAHnc5s9rHGR7ncjaOlUfUHZJsJV/V9nVbZWdEmzUbrv+FHf+rnIbZmTtT6NwoKn4ov6Dsr05/6oX2e1QmIdQkvVWKevSMqpoNQ0/5lxhAJH1HwF1NhE2miUJmC9lwjPDHJa1OEHI4eMEFTYRVBp1lACwkgl/JobWYa6KQCzG40mGGwsXCKh0VK0mq+73Iltcj+UYiFDMF1meSwJMkrRUPkjeLoDBvEtgcb0WoADgeq0GKbKKmHfB4nouuVFpm4fTM7C4/ouMjBul1uTq/7eeK8IRjnCEIxzhCEf447dnbTqmyC8I+uIAAAAASUVORK5CYII=" alt="">
+      </div>
+      <div class="spacer" style="height: 30px;"></div>
+      <ion-list id="login-list2">
+        <label class="item item-input" id="login-input3">
+          <span class="input-label">E-mail</span>
+          <input type="text" placeholder="" ng-model="vm.user.email">
+        </label>
+        <label class="item item-input" id="login-input4">
+          <span class="input-label">Senha</span>
+          <input type="password" placeholder="" ng-model="vm.user.pwd">
+        </label>
+      </ion-list>
+      <div class="alert alert-danger" role="alert" ng-show="vm.err">
+        <span ng-bind="vm.err"></span>
+      </div>
+      <button id="login-button3" type="submit" class="button button-stable  button-block">Acessar</button>
+      <a ui-sref="signup" id="login-button4" class="button button-positive  button-block button-clear">Criar conta</a>
+    </form>
+  </ion-content>
+</ion-view>

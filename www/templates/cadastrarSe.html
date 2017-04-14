@@ -1,0 +1,24 @@
+<ion-view title="Cadastrar-se" id="page8" cache-view="false">
+  <ion-content padding="true" class="has-header">
+    <form id="cadastrarSe-form4" class="list" ng-submit="vm.submitCreate()">
+      <ion-list id="cadastrarSe-list5">
+        <label class="item item-input" id="cadastrarSe-input5">
+          <span class="input-label">Nome</span>
+          <input type="text" ng-model="vm.userCreate.name" placeholder="">
+        </label>
+        <label class="item item-input" id="cadastrarSe-input6">
+          <span class="input-label">E-mail</span>
+          <input type="text" ng-model="vm.userCreate.email" placeholder="">
+        </label>
+        <label class="item item-input" id="cadastrarSe-input7">
+          <span class="input-label">Senha</span>
+          <input type="password" ng-model="vm.userCreate.pwd" placeholder="">
+        </label>
+      </ion-list>
+      <div class="alert alert-danger" role="alert" ng-show="vm.err">
+        <span ng-bind="vm.err"></span>
+      </div>
+      <button id="cadastrarSe-button6" type="submit" class="button button-stable button-block">Cadastrar</button>
+    </form>
+  </ion-content>
+</ion-view>

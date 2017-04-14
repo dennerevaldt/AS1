@@ -1,0 +1,18 @@
+<ion-view title="Nova postagem" cache-view="false" id="page10">
+  <ion-nav-buttons side="left" class="has-header">
+    <a ui-sref="tabsController.timeline" class="button button-positive icon ion-android-arrow-back"></a>
+  </ion-nav-buttons>
+  <ion-nav-buttons side="right" class="has-header">
+    <a class="button button-positive icon ion-android-done" ng-click="vm.submitPost()"></a>
+  </ion-nav-buttons>
+  <ion-content padding="true" class="has-header">
+    <form id="novaPostagem-form7" class="list">
+      <label class="item item-input" id="novaPostagem-input10">
+        <input type="text" placeholder="Escreve sua mensagem aqui" ng-model="vm.post.textPublication">
+      </label>
+      <a id="novaPostagem-button7" class="button button-positive  button-block icon-left ion-image" ng-click="vm.chooseImg()">Escolher imagem</a>
+      <img ng-show="vm.imgURI" ng-src="{{vm.imgURI}}" style="text-align: center">
+      <ion-toggle toggle-class="toggle-positive" ng-model="vm.post.private" id="novaPostagem-toggle3">Postagem privada?</ion-toggle>
+    </form>
+  </ion-content>
+</ion-view>

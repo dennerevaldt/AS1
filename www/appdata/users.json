@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Test",
+    "email": "test@email.com",
+    "pwd": "123456"
+  },
+  {
+    "name": "Admin",
+    "email": "admin@email.com",
+    "pwd": "123456"
+  }
+]

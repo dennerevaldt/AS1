@@ -1,0 +1,20 @@
+<ion-view title="Notificações" id="page4" cache-view="false">
+  <ion-content padding="true" class="has-header">
+    <ion-list id="notificaEs-list3">
+      <ion-item id="notificaEs-list-item1" ng-repeat="not in vm.listNotifications">
+        <p><b>{{not.user_name_father}}</b> deseja conectar-se a você, aceitar?</p>
+        <div class="item-icon-right">
+          <a href="" ng-click="vm.acceptFriend(not)">
+            <i class="icon ion-android-done"></i>
+          </a>
+        </div>
+      </ion-item>
+      <div class="empty-list" ng-show="!vm.listNotifications.length">
+        <div style="margin-top: 60%;">
+          <span class="icon ion-android-notifications"></span>
+          <div>Nenhuma notificação encontrada</div>
+        </div>
+      </div>
+    </ion-list>
+  </ion-content>
+</ion-view>
