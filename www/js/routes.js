@@ -139,28 +139,6 @@ angular.module('app.routes', [])
     }
   })
 
-  .state('novaPostagem', {
-    url: '/post',
-    templateUrl: 'templates/novaPostagem.html',
-    controller: 'HomeController',
-    controllerAs: 'vm',
-    resolve: {
-      InitPublications: function(HomeService) {
-        return HomeService.getPublications()
-          .then(function(resp) {
-              return resp;
-          });
-      },
-      InitFriends: function(HomeService, $cookieStore) {
-        var userLogged = $cookieStore.get('socialCookieUni');
-        return HomeService.getFriends(userLogged)
-          .then(function(resp) {
-              return resp;
-          });
-      }
-    }
-  })
-
 $urlRouterProvider.otherwise('/login')
 
 });

@@ -19,7 +19,7 @@
 
         function search() {
           if (vm.emailSearch) {
-            vm.listFriends = LoginService.searchUser(vm.emailSearch);
+            vm.listFriends = LoginService.searchUser(vm.emailSearch.toLowerCase());
           }
         }
 

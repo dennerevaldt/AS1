@@ -5,10 +5,10 @@
         .module('app.dpa.home')
         .controller('HomeController', HomeController);
 
-    HomeController.$inject = ['HomeService', '$location', '$cookieStore', 'InitPublications', 'InitFriends', '$ionicNavBarDelegate', '$cordovaCamera', '$state', '$ionicLoading', '$timeout'];
+    HomeController.$inject = ['HomeService', '$location', '$cookieStore', 'InitPublications', 'InitFriends', '$ionicNavBarDelegate', '$cordovaCamera', '$state', '$ionicLoading', '$timeout', '$ionicModal', '$scope'];
 
     /* @ngInject */
-    function HomeController(HomeService, $location, $cookieStore, InitPublications, InitFriends, $ionicNavBarDelegate, $cordovaCamera, $state, $ionicLoading, $timeout) {
+    function HomeController(HomeService, $location, $cookieStore, InitPublications, InitFriends, $ionicNavBarDelegate, $cordovaCamera, $state, $ionicLoading, $timeout, $ionicModal, $scope) {
         var vm = this;
         $ionicNavBarDelegate.showBackButton(false);
         vm.userLogged = $cookieStore.get('socialCookieUni');
@@ -19,6 +19,14 @@
         vm.loading = false;
         vm.removeFriend = removeFriend;
         vm.chooseImg = chooseImg;
+        vm.showModalCreate = showModalCreate;
+
+        // modal options
+        $ionicModal.fromTemplateUrl('templates/createPostModal.html', {
+          scope: $scope
+        }).then(function(modal) {
+          $scope.modal = modal;
+        });
 
         activate();
 
@@ -61,7 +69,8 @@
             $ionicLoading.hide();
             HomeService.savePost(post);
             vm.arrPublications.unshift(post);
-            $state.go('tabsController.timeline');
+            $scope.modal.hide();
+            vm.post = {};
           }, 1000);
         }
 
@@ -101,6 +110,9 @@
             maxWidth: 200
           });
         }
-    }
 
+        function showModalCreate() {
+          $scope.modal.show();
+        }
+    }
 })();

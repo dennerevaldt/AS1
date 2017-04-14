@@ -57,7 +57,7 @@
                   $state.go('tabsController.timeline');
                 } else {
                   $ionicLoading.hide();
-                  vm.errCreate = 'E-mail de usuário já existe, tente outro';
+                  vm.err = 'E-mail de usuário já existe, tente outro';
                 }
               }, 1000);
             }
