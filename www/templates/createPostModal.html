@@ -1,14 +1,15 @@
 <ion-modal-view cache-view="false">
   <ion-header-bar class="bar bar-header bar-positive">
     <h1 class="title">Nova postagem</h1>
-    <button class="button button-clear button-primary" ng-click="modal.hide()">Cancelar</button>
+    <button class="button button-clear button-primary" ng-click="vm.modal.hide()">Cancelar</button>
   </ion-header-bar>
   <ion-content class="has-header padding">
     <form id="novaPostagem-form7" class="list">
       <label class="item item-input" id="novaPostagem-input10">
         <input type="text" placeholder="Escreve sua mensagem aqui" ng-model="vm.post.textPublication">
       </label>
-      <a id="novaPostagem-button7" class="button button-positive  button-block icon-left ion-image" ng-click="vm.chooseImg()">Escolher imagem</a>
+      <a id="novaPostagem-button7" class="button button-positive  button-block icon-left ion-camera" ng-click="vm.getPic()">Tirar foto</a>
+      <a id="novaPostagem-button8" class="button button-positive  button-block icon-left ion-image" ng-click="vm.chooseImg()">Escolher imagem</a>
       <img ng-show="vm.imgURI" ng-src="{{vm.imgURI}}" style="text-align: center">
       <ion-toggle toggle-class="toggle-positive" ng-model="vm.post.private" id="novaPostagem-toggle3">Postagem privada?</ion-toggle>
       <a id="novaPostagem-button8" class="button button-positive  button-block" ng-click="vm.submitPost()">Publicar</a>

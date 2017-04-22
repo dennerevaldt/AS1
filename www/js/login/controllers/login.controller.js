@@ -14,13 +14,18 @@
         vm.userCreate = {};
         vm.submitLogin = submitLogin;
         vm.submitCreate = submitCreate;
+        vm.userLogged = {};
 
         activate();
 
         //////////////
 
         function activate() {
-          LoginService.clearCredentials();
+          const localUser = localStorage.getItem('socialCookieUni');
+          vm.userLogged = JSON.parse(localUser);
+          if (vm.userLogged) {
+            $state.go('tabsController.timeline');
+          }
         }
 
         function submitLogin() {

@@ -22,8 +22,9 @@ angular.module('app.routes', [])
                   return resp;
               });
           },
-          InitFriends: function(HomeService, $cookieStore) {
-            var userLogged = $cookieStore.get('socialCookieUni');
+          InitFriends: function(HomeService) {
+            const localUser = localStorage.getItem('socialCookieUni');
+            const userLogged = JSON.parse(localUser);
             return HomeService.getFriends(userLogged)
               .then(function(resp) {
                   return resp;
@@ -49,7 +50,8 @@ angular.module('app.routes', [])
               });
           },
           InitFriends: function(HomeService, $cookieStore) {
-            var userLogged = $cookieStore.get('socialCookieUni');
+            const localUser = localStorage.getItem('socialCookieUni');
+            const userLogged = JSON.parse(localUser);
             return HomeService.getFriends(userLogged)
               .then(function(resp) {
                   return resp;
@@ -75,7 +77,8 @@ angular.module('app.routes', [])
               });
           },
           InitFriends: function(HomeService, $cookieStore) {
-            var userLogged = $cookieStore.get('socialCookieUni');
+            const localUser = localStorage.getItem('socialCookieUni');
+            const userLogged = JSON.parse(localUser);
             return HomeService.getFriends(userLogged)
               .then(function(resp) {
                   return resp;
@@ -94,7 +97,8 @@ angular.module('app.routes', [])
     abstract:true,
     resolve: {
       InitNotifications: function(HomeService, $cookieStore) {
-        var userLogged = $cookieStore.get('socialCookieUni');
+        const localUser = localStorage.getItem('socialCookieUni');
+        const userLogged = JSON.parse(localUser);
         return HomeService.getNotifications(userLogged)
           .then(function(resp) {
               return resp;

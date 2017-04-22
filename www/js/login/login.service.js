@@ -35,18 +35,18 @@
         }
 
         function validAccount(email, pwd) {
-            var user = accounts.filter( function(item) {
-                return item.email === email && item.pwd === pwd;
-            });
-            return user.length ? user[0] : undefined;
+          var user = accounts.filter( function(item) {
+              return item.email === email && item.pwd === pwd;
+          });
+          return user.length ? user[0] : undefined;
         }
 
         function setCredentials (user) {
-            $cookieStore.put('socialCookieUni', user);
+          localStorage.setItem('socialCookieUni', JSON.stringify(user));
         }
 
         function clearCredentials () {
-            $cookieStore.remove('socialCookieUni');
+          localStorage.removeItem('socialCookieUni');
         }
 
         function populateUsers(items) {

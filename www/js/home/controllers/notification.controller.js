@@ -10,7 +10,8 @@
     /* @ngInject */
     function NotificationController(HomeService, InitNotifications, $cookieStore, $scope) {
         var vm = this;
-        vm.userLogged = $cookieStore.get('socialCookieUni');
+        const localUser = localStorage.getItem('socialCookieUni');
+        vm.userLogged = JSON.parse(localUser);
         vm.listNotifications = InitNotifications || [];
         vm.acceptFriend = acceptFriend;
         vm.rejectFriend = rejectFriend;

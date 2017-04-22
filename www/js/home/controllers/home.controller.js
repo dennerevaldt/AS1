@@ -11,7 +11,8 @@
     function HomeController(HomeService, $location, $cookieStore, InitPublications, InitFriends, $ionicNavBarDelegate, $cordovaCamera, $state, $ionicLoading, $timeout, $ionicModal, $scope) {
         var vm = this;
         $ionicNavBarDelegate.showBackButton(false);
-        vm.userLogged = $cookieStore.get('socialCookieUni');
+        const localUser = localStorage.getItem('socialCookieUni');
+        vm.userLogged = JSON.parse(localUser);
         vm.post = {};
         vm.submitPost = submitPost;
         vm.arrPublications = [];
@@ -19,13 +20,14 @@
         vm.loading = false;
         vm.removeFriend = removeFriend;
         vm.chooseImg = chooseImg;
+        vm.getPic = getPic;
         vm.showModalCreate = showModalCreate;
 
         // modal options
         $ionicModal.fromTemplateUrl('templates/createPostModal.html', {
           scope: $scope
         }).then(function(modal) {
-          $scope.modal = modal;
+          vm.modal = modal;
         });
 
         activate();
@@ -69,7 +71,7 @@
             $ionicLoading.hide();
             HomeService.savePost(post);
             vm.arrPublications.unshift(post);
-            $scope.modal.hide();
+            vm.modal.hide();
             vm.post = {};
           }, 1000);
         }
@@ -102,6 +104,27 @@
           });
         }
 
+        function getPic() {
+          var options = {
+            quality: 75,
+            destinationType: Camera.DestinationType.DATA_URL,
+            sourceType: Camera.PictureSourceType.CAMERA,
+            allowEdit: true,
+            encodingType: Camera.EncodingType.JPEG,
+            targetWidth: 300,
+            targetHeight: 300,
+            popoverOptions: CameraPopoverOptions,
+            saveToPhotoAlbum: false,
+      	    correctOrientation: true
+          };
+
+          $cordovaCamera.getPicture(options).then(function(imageData) {
+            vm.imgURI = "data:image/jpeg;base64," + imageData;
+          }, function(err) {
+            // error
+          });
+        }
+
         function loadOn() {
           // Setup the loader
           $ionicLoading.show({
@@ -112,7 +135,7 @@
         }
 
         function showModalCreate() {
-          $scope.modal.show();
+          vm.modal.show();
         }
     }
 })();

@@ -2,9 +2,18 @@ angular
   .module('app')
   .run(run);
 
-run.$inject = ['$rootScope', '$location', '$cookieStore', '$http', 'LoginService', 'HomeService'];
+run.$inject = ['$rootScope', '$location', '$http', 'LoginService', 'HomeService', 'ContactService', '$ionicPlatform', '$cordovaContacts'];
 
-function run($rootScope, $location, $cookieStore, $http, LoginService, HomeService) {
+function run($rootScope, $location, $http, LoginService, HomeService, ContactService, $ionicPlatform, $cordovaContacts) {
+
+    $ionicPlatform.ready(function () {
+      // contacts
+      $cordovaContacts.find({filter: '', multiple: true, fields: ['id', 'formatted', 'emails']})
+        .then(function (allContacts) {
+          ContactService.setContacts(allContacts);
+        });
+    });
+
     // populate publications
     $http.get('appdata/publications.json')
       .then(function(response){
@@ -25,7 +34,7 @@ function run($rootScope, $location, $cookieStore, $http, LoginService, HomeServi
 
     // check authenticate user start change route
     $rootScope.$on('$stateChangeStart', function (event,next,current) {
-      var cookieUser = $cookieStore.get('socialCookieUni') || undefined;
+      var cookieUser = localStorage.getItem('socialCookieUni') || undefined;
       if (!cookieUser) {
         $location.path('login');
       }
