@@ -35,17 +35,24 @@
             vm.err = 'Preencha os campos corretamente';
             return;
           }
-          var user = LoginService.validAccount(vm.user.email.toLowerCase(), vm.user.pwd);
-          if (user) {
-            LoginService.setCredentials(user);
-            $timeout(function () {
+          LoginService.validAccount(vm.user.email.toLowerCase(), vm.user.pwd)
+            .then(function(resp){
+              if(resp.rows.length > 0) {
+                LoginService.setCredentials({
+                  user_id: resp.rows.item(0).user_id,
+                  name: resp.rows.item(0).name,
+                  email: resp.rows.item(0).email
+                });
+                $timeout(function () {
+                  $ionicLoading.hide();
+                  $state.go('tabsController.timeline');
+                }, 1000);
+              }
+            }, function(err){
               $ionicLoading.hide();
-              $state.go('tabsController.timeline');
-            }, 1000);
-          } else {
-            $ionicLoading.hide();
-            vm.err = 'Usuário não encontrado, verifique e tente novamente';
-          }
+              vm.err = 'Usuário não encontrado, verifique e tente novamente';
+              console.log(">>> ERRO AO BUSCAR USERS: " + JSON.stringify(err));
+            });
         }
 
         function submitCreate() {
@@ -56,15 +63,23 @@
               loadOn();
               $timeout(function () {
                 $ionicLoading.hide();
-                var user = LoginService.createAccount(vm.userCreate.name, vm.userCreate.email.toLowerCase(), vm.userCreate.pwd);
-                if (user) {
-                  LoginService.setCredentials(user);
-                  $state.go('tabsController.timeline');
-                } else {
-                  $ionicLoading.hide();
-                  vm.err = 'E-mail de usuário já existe, tente outro';
-                }
+                LoginService.createAccount(vm.userCreate.name, vm.userCreate.email.toLowerCase(), vm.userCreate.pwd)
+                  .then(function(resp) {
+                    LoginService.setCredentials(resp);
+                    $state.go('tabsController.timeline');
+                  }, function(err) {
+                    $ionicLoading.hide();
+                    vm.err = 'E-mail de usuário já existe, tente outro';
+                  });
               }, 1000);
+
+              // if (user) {
+              //   LoginService.setCredentials(user);
+              //   $state.go('tabsController.timeline');
+              // } else {
+              //   $ionicLoading.hide();
+              //   vm.err = 'E-mail de usuário já existe, tente outro';
+              // }
             }
         }
 

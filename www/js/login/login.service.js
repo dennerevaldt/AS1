@@ -5,10 +5,10 @@
         .module('app.dpa.login')
         .factory('LoginService', LoginService);
 
-    LoginService.$inject = ['$http', '$q', '$cookieStore'];
+    LoginService.$inject = ['$http', '$q', '$cordovaSQLite', 'DBService'];
 
     /* @ngInject */
-    function LoginService($http, $q, $cookieStore) {
+    function LoginService($http, $q, $cordovaSQLite, DBService) {
         var accounts = [];
 
         var service = {
@@ -23,22 +23,41 @@
         return service;
 
         function createAccount(name, email, pwd) {
-            var user = accounts.filter( function(item) {
-                return item.email === email;
+          var deferred = $q.defer();
+          searchUser(email)
+            .then(function (result) {
+
+              if (result.rows.length > 0) {
+                //reject
+                return deferred.reject(undefined);
+              }
+
+              // insert
+              var query = "INSERT INTO USERS (email, name, pwd) VALUES (?, ?, ?)";
+              var params = [email, name, pwd];
+              DBService.executeQuery(query, params)
+                .then(function(resp) {
+                  //resolve
+                  return deferred.resolve({
+                    user_id: resp.insertId,
+                    name: name,
+                    email: email
+                  });
+                });
+            }, function(err) {
+              console.log("ERROR CREATE USER: " + JSON.stringify(err));
+              // reject
+              return deferred.reject(undefined);
             });
-            if (user.length > 0) {
-                return undefined;
-            } else {
-                accounts.push({name: name, email: email, pwd: pwd});
-                return {name: name, email: email, pwd: pwd};
-            }
+
+          return deferred.promise;
         }
 
         function validAccount(email, pwd) {
-          var user = accounts.filter( function(item) {
-              return item.email === email && item.pwd === pwd;
-          });
-          return user.length ? user[0] : undefined;
+          var query = "SELECT * FROM USERS WHERE email = ? AND pwd = ?";
+          var params = [email, pwd];
+
+          return DBService.executeQuery(query, params);
         }
 
         function setCredentials (user) {
@@ -50,13 +69,24 @@
         }
 
         function populateUsers(items) {
-          accounts = items;
+          items.map(function(user) {
+            var query = "INSERT INTO USERS (email, name, pwd) VALUES (?, ?, ?)";
+            var params = [user.email, user.name, user.pwd];
+
+            DBService.executeQuery(query, params)
+              .then(function(resp) {
+                console.log("INSERT USERS: " + JSON.stringify(resp));
+              }, function err(err) {
+                console.log("ERROR INSERT USERS: " + JSON.stringify(err));
+              });
+          });
         }
 
         function searchUser(email) {
-          return accounts.filter( function(item) {
-              return item.email === email;
-          });
+          var query = "SELECT * FROM USERS WHERE email = ?";
+          var params = [email];
+
+          return DBService.executeQuery(query, params);
         }
     }
 })();
