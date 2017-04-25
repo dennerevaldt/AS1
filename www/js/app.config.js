@@ -41,8 +41,8 @@ function run($rootScope, $location, $http, LoginService, HomeService, ContactSer
 
           // check authenticate user start change route
           $rootScope.$on('$stateChangeStart', function (event,next,current) {
-            var cookieUser = localStorage.getItem('socialCookieUni') || undefined;
-            if (!cookieUser) {
+            var localUser = localStorage.getItem('socialCookieUni') || undefined;
+            if (!localUser) {
               $location.path('login');
             }
           });
