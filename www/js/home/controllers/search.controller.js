@@ -38,7 +38,18 @@
 
         function search() {
           if (vm.emailSearch) {
-            vm.listFriends = LoginService.searchUser(vm.emailSearch.toLowerCase());
+            LoginService.searchUser(vm.emailSearch.toLowerCase())
+              .then(function(results) {
+                for (var i = 0; i < results.rows.length; i++) {
+                  vm.listFriends.push({
+                    user_id: results.rows.item(i).user_id,
+                    name: results.rows.item(i).name,
+                    email: results.rows.item(i).email
+                  });
+                }
+              }, function(err) {
+                console.log("ERROR SEARCH USER: " + JSON.stringify(err));
+              });
           }
         }
 

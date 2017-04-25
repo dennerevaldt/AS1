@@ -5,10 +5,10 @@
         .module('app.dpa.home')
         .factory('HomeService', HomeService);
 
-    HomeService.$inject = ['$http', '$q'];
+    HomeService.$inject = ['$http', '$q', 'DBService'];
 
     /* @ngInject */
-    function HomeService($http, $q) {
+    function HomeService($http, $q, DBService) {
         var publications = [];
         var friends = [];
 
@@ -50,17 +50,26 @@
         }
 
         function getFriends(userLogged) {
-            var deferred = $q.defer();
-            setTimeout(function() {
-              var frdReturn = [];
-              friends.map(function(item) {
-                  if (item.user_email_father === userLogged.email && item.accept === true) {
-                      frdReturn.push(item);
-                  }
-              });
+          var deferred = $q.defer();
+          var frdReturn = [];
+          var query = "SELECT * FROM FRIENDS f INNER JOIN USERS u ON u.user_id = f.id_followed WHERE f.id_follower = ? AND f.accept = ?";
+          var params = [userLogged.user_id, 1];
+
+          DBService.executeQuery(query, params)
+            .then(function (results) {
+              for (var i = 0; i < results.rows.length; i++) {
+                frdReturn.push({
+                  accept: results.rows.item(i).accept === 1 ? true : false,
+                  email: results.rows.item(i).email,
+                  name: results.rows.item(i).name
+                });
+              }
               deferred.resolve(frdReturn);
-            }, 200);
-            return deferred.promise;
+            }, function (err) {
+              console.log('ERROR GET FRIENDS >>', JSON.stringify(err));
+            });
+
+          return deferred.promise;
         }
 
         function populatePublications(items) {
@@ -68,7 +77,17 @@
         }
 
         function populateFriends(items) {
-            friends = items;
+          items.map(function(user) {
+            var query = "INSERT INTO FRIENDS (accept, id_follower, id_followed) VALUES (?, ?, ?)";
+            var params = [user.accept, user.user_id, user.user_id_followed];
+
+            DBService.executeQuery(query, params)
+              .then(function(resp) {
+                console.log("INSERT FRIENDS: " + JSON.stringify(resp));
+              }, function err(err) {
+                console.log("ERROR INSERT FRIENDS: " + JSON.stringify(err));
+              });
+          });
         }
 
         function savePost(post) {
@@ -87,20 +106,27 @@
         }
 
         function addFriend(item, userLogged, acc) {
-            var obj = {
-                accept: acc ? true : false,
-                email: item.email,
-                name: item.name,
-                user_name_father: userLogged.name,
-                user_email_father: userLogged.email
-            };
-            friends.push(obj);
+            var query = "INSERT INTO FRIENDS (accept, id_follower, id_followed) VALUES (?, ?, ?)";
+            var params = [acc ? 1 : 0, userLogged.user_id, item.user_id];
+
+            DBService.executeQuery(query, params)
+              .then(function(resp) {
+                console.log("INSERT FRIENDS: " + JSON.stringify(resp));
+              }, function err(err) {
+                console.log("ERROR INSERT FRIENDS: " + JSON.stringify(err));
+              });
         }
 
         function acceptFriend(item, userLogged) {
-          var index = friends.indexOf(item);
-          friends[index].accept = true;
-          addFriend({email: item.user_email_father, name: item.user_name_father}, userLogged, true);
+          var query = "UPDATE FRIENDS SET accept = ? WHERE id_followed = ?";
+          var params = [1, item.user_id];
+
+          DBService.executeQuery(query, params)
+            .then(function(resp) {
+              addFriend(item, userLogged, true);
+            }, function err(err) {
+              console.log("ERROR ACCEPT FRIENDS: " + JSON.stringify(err));
+            });
         }
 
         function rejectFriend(item) {
@@ -110,10 +136,25 @@
 
         function getNotifications(userLogged) {
           var deferred = $q.defer();
-          var not = friends.filter(function(item) {
-            return item.email === userLogged.email && item.accept === false;
-          });
-          deferred.resolve(not);
+          var arrNot = [];
+          var query = "SELECT * FROM FRIENDS f INNER JOIN USERS u ON u.user_id = f.id_followed WHERE f.id_followed = ? AND f.accept = ?";
+          var params = [userLogged.user_id, 0];
+
+          DBService.executeQuery(query, params)
+            .then(function (results) {
+              for (var i = 0; i < results.rows.length; i++) {
+                arrNot.push({
+                  user_id: results.rows.item(i).user_id,
+                  accept: results.rows.item(i).accept === 1 ? true : false,
+                  email: results.rows.item(i).email,
+                  name: results.rows.item(i).name
+                });
+              }
+              deferred.resolve(arrNot);
+            }, function (err) {
+              console.log('ERROR GET NOTIFICATIONS >>', JSON.stringify(err));
+            });
+
           return deferred.promise;
         }
     }

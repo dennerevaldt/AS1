@@ -2,7 +2,7 @@
   <ion-content padding="true" class="has-header">
     <ion-list id="notificaEs-list3">
       <ion-item id="notificaEs-list-item1" ng-repeat="not in vm.listNotifications">
-        <p><b>{{not.user_name_father}}</b> deseja conectar-se a você, aceitar?</p>
+        <p><b>{{not.name}}</b> deseja conectar-se a você, aceitar?</p>
         <div class="item-icon-right">
           <a href="" ng-click="vm.acceptFriend(not)">
             <i class="icon ion-android-done"></i>
