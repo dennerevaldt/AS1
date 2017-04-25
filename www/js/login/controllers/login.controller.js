@@ -72,14 +72,6 @@
                     vm.err = 'E-mail de usuário já existe, tente outro';
                   });
               }, 1000);
-
-              // if (user) {
-              //   LoginService.setCredentials(user);
-              //   $state.go('tabsController.timeline');
-              // } else {
-              //   $ionicLoading.hide();
-              //   vm.err = 'E-mail de usuário já existe, tente outro';
-              // }
             }
         }
 
