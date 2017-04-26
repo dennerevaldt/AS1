@@ -12,10 +12,10 @@
         var dbase;
 
         var service = {
-            init: init,
-            reset: reset,
-            executeQuery: executeQuery,
-            setDB: setDB
+          init: init,
+          reset: reset,
+          executeQuery: executeQuery,
+          setDB: setDB
         };
 
         return service;
