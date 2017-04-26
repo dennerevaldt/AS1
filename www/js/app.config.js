@@ -15,7 +15,7 @@ function run($rootScope, $location, $http, LoginService, HomeService, ContactSer
 
       // Obtém objeto do BD
       var db = $cordovaSQLite.openDB({name: "socialNetworkApp.db"});
-      DBService.reset(db); // reseta dados e tabelas
+      // DBService.reset(db); // reseta dados e tabelas
       DBService.init(db); // inicializa dados e tabelas
 
       // populate users

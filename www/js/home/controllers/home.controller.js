@@ -77,7 +77,7 @@
         }
 
         function removeFriend(item) {
-            HomeService.removeFriend(item);
+            HomeService.removeFriend(item, vm.userLogged);
             HomeService.getFriends(vm.userLogged)
               .then(function(friends) {
                 vm.arrFriends = friends;

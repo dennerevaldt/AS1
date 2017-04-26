@@ -21,7 +21,6 @@
             removeFriend: removeFriend,
             addFriend: addFriend,
             acceptFriend: acceptFriend,
-            rejectFriend: rejectFriend,
             savePost: savePost,
             getNotifications: getNotifications
         };
@@ -29,24 +28,24 @@
         return service;
 
         function getBase64(file) {
-            var deferred = $q.defer();
-            var reader = new FileReader();
-            var promise = reader.readAsDataURL(file);
-            reader.onload = function () {
-                deferred.resolve(reader.result);
-            };
-            reader.onerror = function (error) {
-                deferred.reject(error);
-            };
-            return deferred.promise;
+          var deferred = $q.defer();
+          var reader = new FileReader();
+          var promise = reader.readAsDataURL(file);
+          reader.onload = function () {
+              deferred.resolve(reader.result);
+          };
+          reader.onerror = function (error) {
+              deferred.reject(error);
+          };
+          return deferred.promise;
         }
 
         function getPublications() {
-            var deferred = $q.defer();
-            setTimeout(function() {
-              deferred.resolve(publications);
-            }, 200);
-            return deferred.promise;
+          var deferred = $q.defer();
+          setTimeout(function() {
+            deferred.resolve(publications);
+          }, 200);
+          return deferred.promise;
         }
 
         function getFriends(userLogged) {
@@ -61,7 +60,8 @@
                 frdReturn.push({
                   accept: results.rows.item(i).accept === 1 ? true : false,
                   email: results.rows.item(i).email,
-                  name: results.rows.item(i).name
+                  name: results.rows.item(i).name,
+                  user_id: results.rows.item(i).user_id
                 });
               }
               deferred.resolve(frdReturn);
@@ -73,7 +73,7 @@
         }
 
         function populatePublications(items) {
-            publications = items;
+          publications = items;
         }
 
         function populateFriends(items) {
@@ -91,34 +91,45 @@
         }
 
         function savePost(post) {
-            publications.unshift(post);
+          publications.unshift(post);
         }
 
         function removeFriend(item, userLogged) {
-            var index = friends.indexOf(item);
-            friends.splice(index, 1);
-            friends.map(function(friend) {
-                if(friend.user_email_father === item.email) {
-                  var i = friends.indexOf(friend);
-                  friends.splice(i, 1);
-                }
+          var query = "DELETE FROM FRIENDS WHERE id_followed = ? AND id_follower = ?";
+          var params = [item.user_id, userLogged.user_id];
+
+          DBService.executeQuery(query, params)
+            .then(function(resp) {
+              console.log("REMOVE FRIEND: " + JSON.stringify(resp));
+            }, function err(err) {
+              console.log("ERROR REMOVE FRIEND: " + JSON.stringify(err));
+            });
+
+          var query = "DELETE FROM FRIENDS WHERE id_followed = ? AND id_follower = ?";
+          var params = [userLogged.user_id, item.user_id];
+
+          DBService.executeQuery(query, params)
+            .then(function(resp) {
+              console.log("REMOVE FRIEND: " + JSON.stringify(resp));
+            }, function err(err) {
+              console.log("ERROR REMOVE FRIEND: " + JSON.stringify(err));
             });
         }
 
         function addFriend(item, userLogged, acc) {
-            var query = "INSERT INTO FRIENDS (accept, id_follower, id_followed) VALUES (?, ?, ?)";
-            var params = [acc ? 1 : 0, userLogged.user_id, item.user_id];
+          var query = "INSERT INTO FRIENDS (accept, id_follower, id_followed) VALUES (?, ?, ?)";
+          var params = [acc ? 1 : 0, userLogged.user_id, item.user_id];
 
-            DBService.executeQuery(query, params)
-              .then(function(resp) {
-                console.log("INSERT FRIENDS: " + JSON.stringify(resp));
-              }, function err(err) {
-                console.log("ERROR INSERT FRIENDS: " + JSON.stringify(err));
-              });
+          DBService.executeQuery(query, params)
+            .then(function(resp) {
+              console.log("INSERT FRIENDS: " + JSON.stringify(resp));
+            }, function err(err) {
+              console.log("ERROR INSERT FRIENDS: " + JSON.stringify(err));
+            });
         }
 
         function acceptFriend(item, userLogged) {
-          var query = "UPDATE FRIENDS SET accept = ? WHERE id_followed = ?";
+          var query = "UPDATE FRIENDS SET accept = ? WHERE id_follower = ?";
           var params = [1, item.user_id];
 
           DBService.executeQuery(query, params)
@@ -129,15 +140,10 @@
             });
         }
 
-        function rejectFriend(item) {
-          var index = friends.indexOf(item);
-          friends.splice(index, 1);
-        }
-
         function getNotifications(userLogged) {
           var deferred = $q.defer();
           var arrNot = [];
-          var query = "SELECT * FROM FRIENDS f INNER JOIN USERS u ON u.user_id = f.id_followed WHERE f.id_followed = ? AND f.accept = ?";
+          var query = "SELECT * FROM FRIENDS f INNER JOIN USERS u ON u.user_id = f.id_follower WHERE f.id_followed = ? AND f.accept = ?";
           var params = [userLogged.user_id, 0];
 
           DBService.executeQuery(query, params)
@@ -152,7 +158,7 @@
               }
               deferred.resolve(arrNot);
             }, function (err) {
-              console.log('ERROR GET NOTIFICATIONS >>', JSON.stringify(err));
+              console.log('ERROR GET NOTIFICATIONS: ', JSON.stringify(err));
             });
 
           return deferred.promise;
