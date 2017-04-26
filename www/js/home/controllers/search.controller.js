@@ -66,7 +66,7 @@
         }
 
         function addContact(contact) {
-          HomeService.addFriend(contact, vm.userLogged, true);
+          HomeService.addContact(contact, vm.userLogged, true);
           var i = vm.listContacts.indexOf(contact);
           vm.listContacts.splice(i, 1);
         }

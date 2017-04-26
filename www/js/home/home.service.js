@@ -5,10 +5,10 @@
         .module('app.dpa.home')
         .factory('HomeService', HomeService);
 
-    HomeService.$inject = ['$http', '$q', 'DBService'];
+    HomeService.$inject = ['$http', '$q', 'DBService', 'LoginService'];
 
     /* @ngInject */
-    function HomeService($http, $q, DBService) {
+    function HomeService($http, $q, DBService, LoginService) {
         var publications = [];
 
         var service = {
@@ -19,6 +19,7 @@
             populateFriends: populateFriends,
             removeFriend: removeFriend,
             addFriend: addFriend,
+            addContact: addContact,
             acceptFriend: acceptFriend,
             savePost: savePost,
             getNotifications: getNotifications
@@ -164,6 +165,23 @@
               console.log("INSERT FRIENDS: " + JSON.stringify(resp));
             }, function err(err) {
               console.log("ERROR INSERT FRIENDS: " + JSON.stringify(err));
+            });
+        }
+
+        function addContact(item, userLogged) {
+          LoginService.createAccount(item.name, item.email.toLowerCase(), '123456')
+            .then(function(user) {
+              var query = "INSERT INTO FRIENDS (accept, id_follower, id_followed) VALUES (?, ?, ?)";
+              var params = [1, userLogged.user_id, user.user_id];
+
+              DBService.executeQuery(query, params)
+                .then(function(resp) {
+                  console.log("INSERT FRIENDS: " + JSON.stringify(resp));
+                }, function err(err) {
+                  console.log("ERROR INSERT FRIENDS: " + JSON.stringify(err));
+                });
+            }, function(err) {
+              console.log("ERROR INSERT USER: " + JSON.stringify(err));
             });
         }
 
