@@ -2,9 +2,9 @@ angular
   .module('app')
   .run(run);
 
-run.$inject = ['$rootScope', '$location', '$http', 'LoginService', 'HomeService', 'ContactService', '$ionicPlatform', '$cordovaContacts', '$cordovaSQLite', 'DBService'];
+run.$inject = ['$rootScope', '$http', 'LoginService', 'HomeService', 'ContactService', '$ionicPlatform', '$cordovaContacts', '$cordovaSQLite', 'DBService', '$state'];
 
-function run($rootScope, $location, $http, LoginService, HomeService, ContactService, $ionicPlatform, $cordovaContacts, $cordovaSQLite, DBService) {
+function run($rootScope, $http, LoginService, HomeService, ContactService, $ionicPlatform, $cordovaContacts, $cordovaSQLite, DBService, $state) {
 
     $ionicPlatform.ready(function () {
       // contacts
@@ -13,34 +13,51 @@ function run($rootScope, $location, $http, LoginService, HomeService, ContactSer
           ContactService.setContacts(allContacts);
         });
 
-      // Obtém objeto do BD
+      // get BD
       var db = $cordovaSQLite.openDB({name: "socialNetworkApp.db"});
-      // DBService.reset(db); // reseta dados e tabelas
-      DBService.init(db); // inicializa dados e tabelas
+      // check is is Initialized
+      var isInitialized = localStorage.getItem('isInitialized') || undefined;
 
-      // populate users
-      $http.get('appdata/users.json')
-        .then(function(response){
-          LoginService.populateUsers(response.data);
-        });
+      if (!isInitialized) {
+        DBService.reset(db); // reset data
+        DBService.init(db); // init data
 
-      // populate friends
-      $http.get('appdata/friends.json')
-        .then(function(response){
-          HomeService.populateFriends(response.data);
-        });
+        // populate users
+        $http.get('appdata/users.json')
+          .then(function(response){
+            LoginService.populateUsers(response.data);
+          });
 
-      // populate publications
-      $http.get('appdata/publications.json')
-        .then(function(response){
-          HomeService.populatePublications(response.data);
-        });
+        // populate friends
+        $http.get('appdata/friends.json')
+          .then(function(response){
+            HomeService.populateFriends(response.data);
+          });
+
+        // populate publications
+        $http.get('appdata/publications.json')
+          .then(function(response){
+            HomeService.populatePublications(response.data);
+          });
+
+        localStorage.setItem('isInitialized', JSON.stringify({isInitialized: true}));
+      } else {
+        // set instance db
+        DBService.setDB(db);
+      }
+
+      // redirect if logged
+      const localUser = localStorage.getItem('socialCookieUni');
+      const userLogged = JSON.parse(localUser);
+      if (userLogged) {
+        $state.go('tabsController.timeline');
+      }
 
       // check authenticate user start change route
       $rootScope.$on('$stateChangeStart', function (event,next,current) {
         var localUser = localStorage.getItem('socialCookieUni') || undefined;
         if (!localUser) {
-          $location.path('login');
+          $state.go('login');
         }
       });
 

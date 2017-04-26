@@ -10,7 +10,6 @@
     /* @ngInject */
     function HomeService($http, $q, DBService) {
         var publications = [];
-        var friends = [];
 
         var service = {
             getBase64: getBase64,

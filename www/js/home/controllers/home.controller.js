@@ -58,6 +58,7 @@
           loadOn();
           var post = {
             user: {
+              user_id: vm.userLogged.user_id,
               name: vm.userLogged.name,
               email: vm.userLogged.email
             },
@@ -77,11 +78,11 @@
         }
 
         function removeFriend(item) {
-            HomeService.removeFriend(item, vm.userLogged);
-            HomeService.getFriends(vm.userLogged)
-              .then(function(friends) {
-                vm.arrFriends = friends;
-              });
+          HomeService.removeFriend(item, vm.userLogged);
+          HomeService.getFriends(vm.userLogged)
+            .then(function(friends) {
+              vm.arrFriends = friends;
+            });
         }
 
         function chooseImg() {

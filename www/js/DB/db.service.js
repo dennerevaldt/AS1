@@ -14,7 +14,8 @@
         var service = {
             init: init,
             reset: reset,
-            executeQuery: executeQuery
+            executeQuery: executeQuery,
+            setDB: setDB
         };
 
         return service;
@@ -103,6 +104,10 @@
               deferred.reject(err);
             });
           return deferred.promise;
+        }
+
+        function setDB(db) {
+          dbase = db;
         }
     }
 })();

@@ -16,17 +16,7 @@
         vm.submitCreate = submitCreate;
         vm.userLogged = {};
 
-        activate();
-
         //////////////
-
-        function activate() {
-          const localUser = localStorage.getItem('socialCookieUni');
-          vm.userLogged = JSON.parse(localUser);
-          if (vm.userLogged) {
-            $state.go('tabsController.timeline');
-          }
-        }
 
         function submitLogin() {
           loadOn();
