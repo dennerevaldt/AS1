@@ -41,9 +41,31 @@
 
         function getPublications() {
           var deferred = $q.defer();
-          setTimeout(function() {
-            deferred.resolve(publications);
-          }, 200);
+          var pubReturn = [];
+          var query = "SELECT * FROM PUBLICATIONS p INNER JOIN USERS u ON u.user_id = p.user_id ORDER BY publication_id DESC";
+          var params = [];
+
+          DBService.executeQuery(query, params)
+            .then(function (results) {
+              for (var i = 0; i < results.rows.length; i++) {
+                pubReturn.push({
+                  user: {
+                    id: results.rows.item(i).user_id,
+                    name: results.rows.item(i).name,
+                    email: results.rows.item(i).email
+                  },
+                  publication: {
+                    image: results.rows.item(i).image,
+                    private: results.rows.item(i).private === 1 ? true : false,
+                    text: results.rows.item(i).description
+                  }
+                });
+              }
+              deferred.resolve(pubReturn);
+            }, function (err) {
+              console.log('ERROR GET PUBLICATIONS >>', JSON.stringify(err));
+            });
+
           return deferred.promise;
         }
 
@@ -71,8 +93,18 @@
           return deferred.promise;
         }
 
-        function populatePublications(items) {
-          publications = items;
+        function populatePublications(publications) {
+          publications.map(function(item) {
+            var query = "INSERT INTO PUBLICATIONS (description, image, private, user_id) VALUES (?, ?, ?, ?)";
+            var params = [item.publication.text, item.publication.image, item.publication.private ? 1 : 0, item.user.id];
+
+            DBService.executeQuery(query, params)
+              .then(function(resp) {
+                console.log("INSERT PUBLICATIONS: " + JSON.stringify(resp));
+              }, function err(err) {
+                console.log("ERROR INSERT PUBLICATIONS: " + JSON.stringify(err));
+              });
+          });
         }
 
         function populateFriends(items) {
@@ -90,7 +122,15 @@
         }
 
         function savePost(post) {
-          publications.unshift(post);
+          var query = "INSERT INTO PUBLICATIONS (description, image, private, user_id) VALUES (?, ?, ?, ?)";
+          var params = [post.publication.text, post.publication.image, post.publication.private ? 1 : 0, post.user.user_id];
+
+          DBService.executeQuery(query, params)
+            .then(function(resp) {
+              console.log("INSERT PUBLICATION: " + JSON.stringify(resp));
+            }, function err(err) {
+              console.log("ERROR INSERT PUBLICATION: " + JSON.stringify(err));
+            });
         }
 
         function removeFriend(item, userLogged) {

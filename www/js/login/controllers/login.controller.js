@@ -20,7 +20,7 @@
 
         function submitLogin() {
           loadOn();
-          if (!vm.user.email && !vm.user.pwd) {
+          if (!vm.user.email || !vm.user.pwd) {
             $ionicLoading.hide();
             vm.err = 'Preencha os campos corretamente';
             return;

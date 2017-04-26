@@ -1,6 +1,7 @@
 [
   {
     "user": {
+      "id": 1,
       "name": "Test",
       "email": "test@email.com"
     },
@@ -12,6 +13,7 @@
   },
   {
     "user": {
+      "id": 2,
       "name": "Admin",
       "email": "admin@email.com"
     },

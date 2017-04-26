@@ -38,7 +38,7 @@
             });
 
           // TABLE PUBLICATIONS
-          query = "CREATE TABLE IF NOT EXISTS PUBLICATIONS (publication_id INTEGER primary key NOT NULL, "
+          query = "CREATE TABLE IF NOT EXISTS PUBLICATIONS (publication_id INTEGER primary key AUTOINCREMENT NOT NULL, "
                   + "description TEXT NOT NULL, "
                   + "image TEXT NOT NULL, "
                   + "private INTEGER NOT NULL, "
