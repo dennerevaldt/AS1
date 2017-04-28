@@ -5,10 +5,10 @@
         .module('app.dpa.login')
         .controller('LoginController', LoginController);
 
-    LoginController.$inject = ['LoginService', '$state', '$ionicLoading', '$timeout'];
+    LoginController.$inject = ['LoginService', '$state', '$ionicLoading', '$timeout', '$cordovaToast'];
 
     /* @ngInject */
-    function LoginController(LoginService, $state, $ionicLoading, $timeout) {
+    function LoginController(LoginService, $state, $ionicLoading, $timeout, $cordovaToast) {
         var vm = this;
         vm.user = {};
         vm.userCreate = {};
@@ -22,32 +22,33 @@
           loadOn();
           if (!vm.user.email || !vm.user.pwd) {
             $ionicLoading.hide();
-            vm.err = 'Preencha os campos corretamente';
+            $cordovaToast
+              .show('Preencha os campos corretamente', 'long', 'center');
             return;
           }
           LoginService.validAccount(vm.user.email.toLowerCase(), vm.user.pwd)
             .then(function(resp){
-              if(resp.rows.length > 0) {
+              if(resp.data.user_id) {
                 LoginService.setCredentials({
-                  user_id: resp.rows.item(0).user_id,
-                  name: resp.rows.item(0).name,
-                  email: resp.rows.item(0).email
+                  user_id: resp.data.user_id,
+                  name: resp.data.name,
+                  email: resp.data.email,
+                  token: resp.data.token
                 });
-                $timeout(function () {
-                  $ionicLoading.hide();
-                  $state.go('tabsController.timeline');
-                }, 1000);
+                $ionicLoading.hide();
+                $state.go('tabsController.timeline');
               }
             }, function(err){
               $ionicLoading.hide();
-              vm.err = 'Usuário não encontrado, verifique e tente novamente';
-              console.log(">>> ERRO AO BUSCAR USERS: " + JSON.stringify(err));
+              $cordovaToast
+                .show('Usuário não encontrado, verifique e tente novamente', 'long', 'center');
             });
         }
 
         function submitCreate() {
             if (!vm.userCreate.name && !vm.userCreate.email && !vm.userCreate.pwd) {
-              vm.err = 'Preencha os campos corretamente';
+              $cordovaToast
+                .show('Preencha os campos corretamente', 'long', 'center');
               return;
             } else {
               loadOn();
@@ -59,7 +60,8 @@
                     $state.go('tabsController.timeline');
                   }, function(err) {
                     $ionicLoading.hide();
-                    vm.err = 'E-mail de usuário já existe, tente outro';
+                    $cordovaToast
+                      .show('E-mail de usuário já existe, tente outro', 'long', 'center');
                   });
               }, 1000);
             }

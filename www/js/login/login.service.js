@@ -14,6 +14,7 @@
         var service = {
             createAccount: createAccount,
             validAccount: validAccount,
+            validSQLite: validSQLite,
             setCredentials: setCredentials,
             clearCredentials: clearCredentials,
             populateUsers: populateUsers,
@@ -54,6 +55,22 @@
         }
 
         function validAccount(email, pwd) {
+          var deferred = $q.defer();
+          $http({
+            url: 'https://as1-api.herokuapp.com/token',
+            method: 'POST',
+            data: {username: email, password: pwd}
+          }).then(function(resp) {
+            //resolve
+            deferred.resolve(resp);
+          }, function (err) {
+            // reject
+            deferred.reject(err);
+          });
+          return deferred.promise;
+        }
+
+        function validSQLite(email, pwd) {
           var query = "SELECT * FROM USERS WHERE email = ? AND pwd = ?";
           var params = [email, pwd];
 

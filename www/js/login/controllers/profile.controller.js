@@ -5,10 +5,10 @@
         .module('app.dpa.login')
         .controller('ProfileController', ProfileController);
 
-    ProfileController.$inject = ['$state', 'LoginService'];
+    ProfileController.$inject = ['$state', 'LoginService', '$ionicLoading', '$timeout'];
 
     /* @ngInject */
-    function ProfileController($state, LoginService) {
+    function ProfileController($state, LoginService, $ionicLoading, $timeout) {
         var vm = this;
         const localUser = localStorage.getItem('socialCookieUni');
         vm.userLogged = JSON.parse(localUser);
@@ -17,8 +17,21 @@
         /////////
 
         function logout() {
+          loadOn();
           LoginService.clearCredentials();
-          $state.go('login');
+          $timeout(function(){
+            $state.go('login');
+            $ionicLoading.hide();
+          }, 500);
+        }
+
+        function loadOn() {
+          // Setup the loader
+          $ionicLoading.show({
+            animation: 'fade-in',
+            showBackdrop: true,
+            maxWidth: 200
+          });
         }
     }
 })();

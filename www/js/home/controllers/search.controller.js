@@ -5,10 +5,10 @@
         .module('app.dpa.home')
         .controller('SearchController', SearchController);
 
-    SearchController.$inject = ['LoginService', 'HomeService', '$cookieStore', 'ContactService', '$scope', '$ionicModal'];
+    SearchController.$inject = ['LoginService', 'HomeService', '$cookieStore', 'ContactService', '$scope', '$ionicModal', '$cordovaToast'];
 
     /* @ngInject */
-    function SearchController(LoginService, HomeService, $cookieStore, ContactService, $scope, $ionicModal) {
+    function SearchController(LoginService, HomeService, $cookieStore, ContactService, $scope, $ionicModal, $cordovaToast) {
         var vm = this;
         const localUser = localStorage.getItem('socialCookieUni');
         vm.userLogged = JSON.parse(localUser);
@@ -59,6 +59,8 @@
           var i = vm.listFriends.indexOf(item);
           vm.listFriends.splice(i, 1);
           vm.emailSearch = '';
+          $cordovaToast
+            .show('Usuário adicionado, aguarde aprovação', 'short', 'center');
         }
 
         function showModalContacts() {
@@ -69,6 +71,8 @@
           HomeService.addContact(contact, vm.userLogged, true);
           var i = vm.listContacts.indexOf(contact);
           vm.listContacts.splice(i, 1);
+          $cordovaToast
+            .show('Usuário adicionado com sucesso', 'short', 'center');
         }
     }
 })();

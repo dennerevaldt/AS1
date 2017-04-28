@@ -5,10 +5,10 @@
         .module('app.dpa.home')
         .controller('HomeController', HomeController);
 
-    HomeController.$inject = ['HomeService', '$location', '$cookieStore', 'InitPublications', 'InitFriends', '$ionicNavBarDelegate', '$cordovaCamera', '$state', '$ionicLoading', '$timeout', '$ionicModal', '$scope'];
+    HomeController.$inject = ['HomeService', '$location', '$cookieStore', 'InitPublications', 'InitFriends', '$ionicNavBarDelegate', '$cordovaCamera', '$state', '$ionicLoading', '$timeout', '$ionicModal', '$scope', '$ionicPopup', '$cordovaToast'];
 
     /* @ngInject */
-    function HomeController(HomeService, $location, $cookieStore, InitPublications, InitFriends, $ionicNavBarDelegate, $cordovaCamera, $state, $ionicLoading, $timeout, $ionicModal, $scope) {
+    function HomeController(HomeService, $location, $cookieStore, InitPublications, InitFriends, $ionicNavBarDelegate, $cordovaCamera, $state, $ionicLoading, $timeout, $ionicModal, $scope, $ionicPopup, $cordovaToast) {
         var vm = this;
         $ionicNavBarDelegate.showBackButton(false);
         const localUser = localStorage.getItem('socialCookieUni');
@@ -78,11 +78,20 @@
         }
 
         function removeFriend(item) {
-          HomeService.removeFriend(item, vm.userLogged);
-          HomeService.getFriends(vm.userLogged)
-            .then(function(friends) {
-              vm.arrFriends = friends;
-            });
+          $ionicPopup.confirm({
+            title: 'Confirmação',
+            template: 'Deseja realmente apagar '+item.name+'?'
+          }).then(function (result) {
+            if (result) {
+            HomeService.removeFriend(item, vm.userLogged);
+            HomeService.getFriends(vm.userLogged)
+              .then(function(friends) {
+                vm.arrFriends = friends;
+                $cordovaToast
+                  .show('Amigo removido com sucesso', 'long', 'center');
+              });
+            }
+          });
         }
 
         function chooseImg() {

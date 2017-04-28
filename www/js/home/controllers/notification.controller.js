@@ -5,10 +5,10 @@
         .module('app.dpa.home')
         .controller('NotificationController', NotificationController);
 
-    NotificationController.$inject = ['HomeService', 'InitNotifications', '$cookieStore', '$scope'];
+    NotificationController.$inject = ['HomeService', 'InitNotifications', '$cookieStore', '$scope', '$cordovaToast'];
 
     /* @ngInject */
-    function NotificationController(HomeService, InitNotifications, $cookieStore, $scope) {
+    function NotificationController(HomeService, InitNotifications, $cookieStore, $scope, $cordovaToast) {
         var vm = this;
         const localUser = localStorage.getItem('socialCookieUni');
         vm.userLogged = JSON.parse(localUser);
@@ -20,6 +20,8 @@
 
         function acceptFriend(not) {
           HomeService.acceptFriend(not, vm.userLogged);
+          $cordovaToast
+            .show('Usuário aceito', 'long', 'center');
           vm.listNotifications.splice(not, 1);
           $scope.$emit('handleEmit', {notification: not});
         }
