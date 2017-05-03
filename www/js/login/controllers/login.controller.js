@@ -28,15 +28,18 @@
           }
           LoginService.validAccount(vm.user.email.toLowerCase(), vm.user.pwd)
             .then(function(resp){
-              if(resp.data.user_id) {
-                LoginService.setCredentials({
-                  user_id: resp.data.user_id,
-                  name: resp.data.name,
-                  email: resp.data.email,
-                  token: resp.data.token
+              if(resp.data.token) {
+                LoginService.setCredentials(resp.data.token);
+                LoginService.getDataUser()
+                .then(function(resp) {
+                  localStorage.setItem('socialCookieUni', JSON.stringify(resp.data.user))
+                  $ionicLoading.hide();
+                  $state.go('tabsController.timeline');
+                }, function (err) {
+                  $ionicLoading.hide();
+                  $cordovaToast
+                    .show('Problemas ao buscar dados do usuário', 'long', 'center');
                 });
-                $ionicLoading.hide();
-                $state.go('tabsController.timeline');
               }
             }, function(err){
               $ionicLoading.hide();

@@ -16,6 +16,7 @@
             validAccount: validAccount,
             validSQLite: validSQLite,
             setCredentials: setCredentials,
+            getDataUser: getDataUser,
             clearCredentials: clearCredentials,
             populateUsers: populateUsers,
             searchUser: searchUser
@@ -77,8 +78,22 @@
           return DBService.executeQuery(query, params);
         }
 
-        function setCredentials (user) {
-          localStorage.setItem('socialCookieUni', JSON.stringify(user));
+        function setCredentials (token) {
+          localStorage.setItem('socialTokenUni', token);
+        }
+
+        function getDataUser() {
+          const token = localStorage.getItem('socialTokenUni');
+          var deferred = $q.defer();
+          $http.get('https://as1-api.herokuapp.com/user', {headers: { 'x-access-token' : token }})
+          .then(function(resp) {
+            //resolve
+            deferred.resolve(resp);
+          }, function (err) {
+            // reject
+            deferred.reject(err);
+          });
+          return deferred.promise;
         }
 
         function clearCredentials () {
